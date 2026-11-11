@@ -26,8 +26,11 @@ export default async function ListPage() {
   }
 
   const cost = rows.reduce((t, r) => t + (r.unit ?? 0) * r.qty, 0);
-  const revenue = rows.reduce((t, r) => t + (r.retail_price ?? 0) * r.qty, 0);
-  const allHaveRetail = rows.every((r) => r.retail_price != null && r.unit != null);
+  // Revenue and profit only count items that have both a cost and a retail price.
+  const complete = rows.filter((r) => r.retail_price != null && r.unit != null);
+  const revenue = complete.reduce((t, r) => t + r.retail_price! * r.qty, 0);
+  const profit = complete.reduce((t, r) => t + (r.retail_price! - r.unit!) * r.qty, 0);
+  const allHaveRetail = complete.length === rows.length;
   const done = rows.filter((r) => r.done).length;
 
   return (
@@ -53,15 +56,17 @@ export default async function ListPage() {
               <div className="mt-1 font-bold">{rs(cost)}</div>
             </div>
             <div className="card p-3">
-              <div className="text-xs text-muted">Sells for</div>
-              <div className="mt-1 font-bold">{revenue ? rs(revenue) : "—"}</div>
+              <div className="text-xs text-muted">Sells for{allHaveRetail ? "" : "*"}</div>
+              <div className="mt-1 font-bold">{complete.length ? rs(revenue) : "—"}</div>
             </div>
             <div className="card p-3">
               <div className="text-xs text-muted">Profit{allHaveRetail ? "" : "*"}</div>
-              <div className="mt-1 font-bold text-accent">{revenue ? rs(revenue - cost) : "—"}</div>
+              <div className={`mt-1 font-bold ${profit < 0 ? "text-bad" : "text-accent"}`}>
+                {complete.length ? rs(profit) : "—"}
+              </div>
             </div>
           </div>
-          {!allHaveRetail && revenue > 0 && (
+          {!allHaveRetail && complete.length > 0 && (
             <p className="-mt-3 mb-4 text-xs text-muted">* Only counts items that have both a price and a retail price.</p>
           )}
 

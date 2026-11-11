@@ -10,6 +10,7 @@ A phone-first web app for walking the wholesale shops in Pettah. You record what
 - **Shops:** grouped by street, with what's still to check there, a call button and a map link.
 - **Buy list:** items grouped by their cheapest shop, showing the cash you need, what it sells for, and the profit.
 - **Export CSV:** opens in Excel.
+- **Help:** a tutorial for every screen in English or Sinhala, with a step-by-step mode.
 - **Photos:** of items or price tags, shrunk on the phone before upload.
 - **Optional shared password** to keep strangers out.
 

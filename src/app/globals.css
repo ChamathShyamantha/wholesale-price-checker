@@ -39,7 +39,7 @@
   --color-warn: var(--warn);
   --color-warn-soft: var(--warn-soft);
   --color-bad: var(--bad);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-geist-sans), var(--font-sinhala), system-ui, sans-serif;
 }
 
 html {

@@ -31,6 +31,16 @@ export async function addPrice(_prev: AddPriceState, form: FormData): Promise<Ad
   try {
     let shopId = num(form.get("shop_id"));
     const newShop = str(form.get("new_shop_name"));
+    let productId = num(form.get("product_id"));
+    const newProduct = str(form.get("new_product_name"));
+    const price = num(form.get("price"));
+    const pack = Math.max(1, Math.round(num(form.get("pack_qty")) ?? 1));
+
+    // Check everything first, so a failed save never leaves a half-created shop or item behind.
+    if (!shopId && !newShop) return { ok: false, message: "Pick a shop" };
+    if (!productId && !newProduct) return { ok: false, message: "Pick an item" };
+    if (price == null || price < 0) return { ok: false, message: "Enter a price" };
+
     if (!shopId && newShop) {
       const [row] = await q<{ id: number }>(
         `INSERT INTO shops (name, street) VALUES ($1, $2) RETURNING id`,
@@ -38,11 +48,6 @@ export async function addPrice(_prev: AddPriceState, form: FormData): Promise<Ad
       );
       shopId = row.id;
     }
-    if (!shopId) return { ok: false, message: "Pick a shop" };
-
-    let productId = num(form.get("product_id"));
-    const newProduct = str(form.get("new_product_name"));
-    const pack = Math.max(1, Math.round(num(form.get("pack_qty")) ?? 1));
     if (!productId && newProduct) {
       const [row] = await q<{ id: number }>(
         `INSERT INTO products (name, category, default_pack) VALUES ($1, $2, $3) RETURNING id`,
@@ -50,10 +55,6 @@ export async function addPrice(_prev: AddPriceState, form: FormData): Promise<Ad
       );
       productId = row.id;
     }
-    if (!productId) return { ok: false, message: "Pick an item", shopId };
-
-    const price = num(form.get("price"));
-    if (price == null || price < 0) return { ok: false, message: "Enter a price", shopId, productId };
 
     await q(
       `INSERT INTO prices (product_id, shop_id, price, pack_qty, moq, notes, photo_url)
@@ -62,7 +63,7 @@ export async function addPrice(_prev: AddPriceState, form: FormData): Promise<Ad
     );
     await q(`INSERT INTO leads (product_id, shop_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`, [productId, shopId]);
     refresh();
-    return { ok: true, message: "Saved", productId, shopId, at: Date.now() };
+    return { ok: true, message: "Saved", productId: productId ?? undefined, shopId: shopId ?? undefined, at: Date.now() };
   } catch (e) {
     return { ok: false, message: e instanceof Error ? e.message : "Something went wrong" };
   }

@@ -102,9 +102,11 @@ export default function AddPriceForm({
   const streets = [...new Set(shops.map((s) => s.street).filter(Boolean))].sort();
 
   let compare: { tone: "good" | "warn" | "info"; text: string } | null = null;
+  // A new shop is never the current cheapest, whatever shop was picked before.
+  const compareShopId = newShop ? null : shopId;
   if (unit != null && product?.best_unit != null) {
     const best = product.best_unit;
-    if (product.best_shop_id === shopId) {
+    if (product.best_shop_id === compareShopId) {
       compare = { tone: "info", text: `This shop is the current cheapest (${rs(best)}/pc).` };
     } else if (unit > best) {
       compare = { tone: "warn", text: `${product.best_shop} is cheaper: ${rs(best)}/pc (${rs(unit - best)} less per piece).` };

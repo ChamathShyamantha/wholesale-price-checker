@@ -2,6 +2,7 @@ import { connection } from "next/server";
 import { listProducts } from "@/lib/queries";
 import ProductList from "@/components/ProductList";
 import DbError from "@/components/DbError";
+import FirstVisitHint from "@/components/FirstVisitHint";
 
 export default async function Home() {
   await connection();
@@ -26,6 +27,7 @@ export default async function Home() {
           Export CSV
         </a>
       </header>
+      <FirstVisitHint />
       <ProductList products={products} />
     </>
   );

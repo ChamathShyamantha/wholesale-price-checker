@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Geist } from "next/font/google";
+import { Geist, Noto_Sans_Sinhala } from "next/font/google";
 import BottomNav from "@/components/BottomNav";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+// Used for Sinhala text in the tutorial (Geist has no Sinhala letters).
+const sinhala = Noto_Sans_Sinhala({ variable: "--font-sinhala", subsets: ["sinhala"], preload: false });
 
 export const metadata: Metadata = {
   title: "Price Checker",
@@ -23,7 +25,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
+    <html lang="en" className={`${geistSans.variable} ${sinhala.variable} h-full antialiased`}>
       <body className="min-h-full font-sans">
         <main className="mx-auto w-full max-w-3xl px-4 pt-4 pb-28">{children}</main>
         <BottomNav />
