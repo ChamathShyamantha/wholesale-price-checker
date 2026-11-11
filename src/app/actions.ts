@@ -39,7 +39,9 @@ export async function addPrice(_prev: AddPriceState, form: FormData): Promise<Ad
     // Check everything first, so a failed save never leaves a half-created shop or item behind.
     if (!shopId && !newShop) return { ok: false, message: "Pick a shop" };
     if (!productId && !newProduct) return { ok: false, message: "Pick an item" };
-    if (price == null || price < 0) return { ok: false, message: "Enter a price" };
+    if (price == null) return { ok: false, message: "Enter a price" };
+    // A zero or minus price is always a typo, and would wrongly become the "cheapest".
+    if (price <= 0) return { ok: false, message: "Price must be more than 0" };
 
     if (!shopId && newShop) {
       const [row] = await q<{ id: number }>(

@@ -21,7 +21,10 @@ async function createRunner(): Promise<Runner> {
   // Local development without Neon: DATABASE_URL=pglite (data kept in ./.pglite).
   if (url === "pglite" && process.env.NODE_ENV !== "production") {
     const { PGlite } = await import("@electric-sql/pglite");
-    const pg = new PGlite("./.pglite");
+    // One shared instance per process: pages and API routes load this module separately,
+    // and two PGlite instances on the same folder would not see each other's writes.
+    const g = globalThis as { __wpcPglite?: InstanceType<typeof PGlite> };
+    const pg = (g.__wpcPglite ??= new PGlite("./.pglite"));
     return {
       query: async (text, params) => (await pg.query(text, params)).rows,
       batch: async (stmts) => {
@@ -108,10 +111,14 @@ async function setup() {
     pack: pack ?? 1,
     notes: notes ?? "",
   }));
-  // One transaction, guarded by an advisory lock, so two cold starts can't seed twice.
+  // Tables first (safe to repeat), then seed only if this database was never seeded.
+  await db.batch([{ text: `SELECT pg_advisory_xact_lock(424242)` }, ...SCHEMA.map((text) => ({ text }))]);
+  const seeded = await db.query(`SELECT 1 FROM app_meta WHERE key = 'seeded'`, []);
+  if (seeded.length > 0) return;
+
+  // One transaction, guarded by an advisory lock and NOT_SEEDED, so two cold starts can't seed twice.
   await db.batch([
     { text: `SELECT pg_advisory_xact_lock(424242)` },
-    ...SCHEMA.map((text) => ({ text })),
     {
       text: `INSERT INTO shops (name, street, address)
        SELECT x->>'name', x->>'street', NULLIF(x->>'address', '')

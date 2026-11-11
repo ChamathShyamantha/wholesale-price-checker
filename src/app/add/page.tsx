@@ -1,5 +1,5 @@
 import { connection } from "next/server";
-import { listProducts, shopOptions } from "@/lib/queries";
+import { latestOffers, listProducts, shopOptions } from "@/lib/queries";
 import { CATEGORIES } from "@/lib/seed";
 import AddPriceForm from "@/components/AddPriceForm";
 import DbError from "@/components/DbError";
@@ -7,9 +7,9 @@ import DbError from "@/components/DbError";
 export default async function AddPage({ searchParams }: PageProps<"/add">) {
   await connection();
   const sp = await searchParams;
-  let products, shops;
+  let products, shops, offers;
   try {
-    [products, shops] = await Promise.all([listProducts(), shopOptions()]);
+    [products, shops, offers] = await Promise.all([listProducts(), shopOptions(), latestOffers()]);
   } catch (e) {
     return <DbError error={e} />;
   }
@@ -35,6 +35,7 @@ export default async function AddPage({ searchParams }: PageProps<"/add">) {
         initialProductId={initialProductId}
         initialShopId={initialShopId}
         startWithNewShop={sp.newshop === "1"}
+        offers={offers}
       />
     </>
   );

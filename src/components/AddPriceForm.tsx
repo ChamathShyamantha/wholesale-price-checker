@@ -36,6 +36,7 @@ export default function AddPriceForm({
   initialProductId,
   initialShopId,
   startWithNewShop = false,
+  offers,
 }: {
   products: P[];
   shops: S[];
@@ -43,6 +44,7 @@ export default function AddPriceForm({
   initialProductId: number | null;
   initialShopId: number | null;
   startWithNewShop?: boolean;
+  offers: { product_id: number; shop_id: number; shop_name: string; unit: number }[];
 }) {
   const [state, action, pending] = useActionState<AddPriceState, FormData>(addPrice, { ok: false, message: "" });
 
@@ -101,21 +103,32 @@ export default function AddPriceForm({
   const unit = price && Number.isFinite(priceNum) ? priceNum / packNum : null;
   const streets = [...new Set(shops.map((s) => s.street).filter(Boolean))].sort();
 
-  let compare: { tone: "good" | "warn" | "info"; text: string } | null = null;
-  // A new shop is never the current cheapest, whatever shop was picked before.
+  // Compare against the OTHER shops' latest prices (a new shop has no price of its own yet),
+  // so updating the current cheapest shop's price still tells you if someone else is now cheaper.
   const compareShopId = newShop ? null : shopId;
-  if (unit != null && product?.best_unit != null) {
-    const best = product.best_unit;
-    if (product.best_shop_id === compareShopId) {
-      compare = { tone: "info", text: `This shop is the current cheapest (${rs(best)}/pc).` };
-    } else if (unit > best) {
-      compare = { tone: "warn", text: `${product.best_shop} is cheaper: ${rs(best)}/pc (${rs(unit - best)} less per piece).` };
+  const productOffers = offers.filter((o) => o.product_id === productId);
+  const lastHere = productOffers.find((o) => o.shop_id === compareShopId) ?? null;
+  const bestOther = productOffers
+    .filter((o) => o.shop_id !== compareShopId)
+    .reduce<(typeof offers)[number] | null>((b, o) => (!b || o.unit < b.unit ? o : b), null);
+
+  let compare: { tone: "good" | "warn" | "info"; text: string } | null = null;
+  if (unit != null && unit > 0 && bestOther) {
+    const best = bestOther.unit;
+    if (unit > best) {
+      compare = { tone: "warn", text: `${bestOther.shop_name} is cheaper: ${rs(best)}/pc (${rs(unit - best)} less per piece).` };
     } else if (unit < best) {
-      compare = { tone: "good", text: `New best price! ${rs(best - unit)}/pc cheaper than ${product.best_shop}.` };
+      compare = { tone: "good", text: `New best price! ${rs(best - unit)}/pc cheaper than ${bestOther.shop_name}.` };
     } else {
-      compare = { tone: "info", text: `Same as ${product.best_shop} (${rs(best)}/pc).` };
+      compare = { tone: "info", text: `Same as ${bestOther.shop_name} (${rs(best)}/pc).` };
     }
+  } else if (unit != null && unit > 0 && productOffers.length === 0) {
+    compare = { tone: "info", text: "First price for this item." };
   }
+  const changeHere =
+    unit != null && unit > 0 && lastHere && Math.abs(lastHere.unit - unit) > 0.001
+      ? `${unit > lastHere.unit ? "▲ Up" : "▼ Down"} from ${rs(lastHere.unit)}/pc last time at this shop.`
+      : null;
 
   const savedProduct = state.ok ? products.find((p) => p.id === state.productId) : null;
 
@@ -288,6 +301,10 @@ export default function AddPriceForm({
           >
             {compare.text}
           </p>
+        )}
+        {changeHere && <p className="mt-1.5 text-sm text-muted">{changeHere}</p>}
+        {unit != null && unit <= 0 && price.trim() !== "" && (
+          <p className="mt-2 text-sm text-bad">Price must be more than 0.</p>
         )}
       </section>
 

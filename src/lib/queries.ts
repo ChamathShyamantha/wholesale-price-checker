@@ -243,6 +243,16 @@ export async function exportRows(): Promise<ExportRow[]> {
     ORDER BY p.category, p.name, l.unit NULLS LAST`);
 }
 
+export type LatestOffer = { product_id: number; shop_id: number; shop_name: string; unit: number };
+
+/** Latest price per piece for every (item, shop) pair, for comparisons while adding a price. */
+export async function latestOffers(): Promise<LatestOffer[]> {
+  return q<LatestOffer>(`
+    WITH ${LATEST}
+    SELECT l.product_id, l.shop_id, s.name AS shop_name, l.unit
+    FROM latest l JOIN shops s ON s.id = l.shop_id`);
+}
+
 export async function shopOptions() {
   return q<{ id: number; name: string; street: string }>(`SELECT id, name, street FROM shops ORDER BY name`);
 }
