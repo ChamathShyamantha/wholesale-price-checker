@@ -1,28 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useSyncExternalStore } from "react";
-import { TUTORIAL, type Lang, type Section } from "@/lib/tutorial";
-
-const LANG_KEY = "wpc_lang";
-const listeners = new Set<() => void>();
-function subscribe(cb: () => void) {
-  listeners.add(cb);
-  return () => listeners.delete(cb);
-}
-function readLang(): Lang {
-  try {
-    return localStorage.getItem(LANG_KEY) === "si" ? "si" : "en";
-  } catch {
-    return "en";
-  }
-}
-function saveLang(lang: Lang) {
-  try {
-    localStorage.setItem(LANG_KEY, lang);
-  } catch {}
-  listeners.forEach((l) => l());
-}
+import { useState } from "react";
+import { TUTORIAL, type Section } from "@/lib/tutorial";
+import { setLang as saveLang, useLang, type Lang } from "@/lib/lang";
+import { startTour } from "@/lib/tourStore";
 
 function Steps({ section }: { section: Section }) {
   return (
@@ -40,7 +22,7 @@ function Steps({ section }: { section: Section }) {
 }
 
 export default function Tutorial() {
-  const lang = useSyncExternalStore(subscribe, readLang, () => "en" as Lang);
+  const lang = useLang();
   const t = TUTORIAL[lang];
   const [step, setStep] = useState<number | null>(null);
   const [open, setOpen] = useState<string | null>(null);
@@ -117,8 +99,12 @@ export default function Tutorial() {
         <div className="shrink-0">{langSwitch}</div>
       </header>
 
-      <button type="button" className="btn btn-primary w-full" onClick={() => setStep(0)}>
-        ▶ {t.start}
+      <button type="button" className="btn btn-primary w-full text-base" onClick={startTour}>
+        ▶ {t.tour}
+      </button>
+      <p className="mt-1.5 text-center text-xs text-muted">{t.tourHint}</p>
+      <button type="button" className="btn btn-ghost mt-3 w-full text-sm" onClick={() => setStep(0)}>
+        📖 {t.start}
       </button>
       <p className="mt-2 text-xs text-muted">{t.note}</p>
 

@@ -41,7 +41,7 @@ export default async function ListPage() {
       </header>
 
       {rows.length === 0 ? (
-        <div className="card p-5 text-center text-sm text-muted">
+        <div className="card p-5 text-center text-sm text-muted" data-tour="list-main">
           Nothing on the list. Open an{" "}
           <Link href="/" className="text-accent">
             item
@@ -50,7 +50,7 @@ export default async function ListPage() {
         </div>
       ) : (
         <>
-          <div className="mb-5 grid grid-cols-3 gap-2 text-center">
+          <div className="mb-5 grid grid-cols-3 gap-2 text-center" data-tour="list-main">
             <div className="card p-3">
               <div className="text-xs text-muted">Cash needed</div>
               <div className="mt-1 font-bold">{rs(cost)}</div>

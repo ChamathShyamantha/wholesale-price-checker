@@ -147,7 +147,7 @@ export default function AddPriceForm({
       {!state.ok && state.message && <div className="card border-bad p-3 text-sm text-bad">{state.message}</div>}
 
       {/* Shop */}
-      <section>
+      <section data-tour="add-shop">
         <div className="mb-1.5 flex items-center justify-between">
           <label className="text-sm font-semibold">Shop</label>
           {!newShop && (
@@ -203,7 +203,7 @@ export default function AddPriceForm({
       </section>
 
       {/* Item */}
-      <section>
+      <section data-tour="add-item">
         <div className="mb-1.5 flex items-center justify-between">
           <label className="text-sm font-semibold">Item</label>
           {!newProduct && (
@@ -263,7 +263,7 @@ export default function AddPriceForm({
       {/* Price */}
       <section>
         <label className="mb-1.5 block text-sm font-semibold">Wholesale price (Rs)</label>
-        <div className="flex gap-2">
+        <div className="flex gap-2" data-tour="add-price">
           <input
             className="field text-2xl font-bold"
             name="price"
@@ -273,7 +273,7 @@ export default function AddPriceForm({
             onChange={(e) => setPrice(e.target.value)}
           />
         </div>
-        <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+        <div className="mt-2 flex flex-wrap items-center gap-2 text-sm" data-tour="add-pack">
           <span className="text-muted">for</span>
           <button type="button" className="chip" data-on={packNum === 1} onClick={() => setPack("1")}>
             1 piece
@@ -309,7 +309,7 @@ export default function AddPriceForm({
       </section>
 
       <section>
-        <button type="button" className="text-sm font-medium text-accent" onClick={() => setMore(!more)}>
+        <button type="button" className="text-sm font-medium text-accent" onClick={() => setMore(!more)} data-tour="add-extras">
           {more ? "− Hide extras" : "+ MOQ, note, photo"}
         </button>
         <div className={more ? "mt-3 space-y-3" : "hidden"}>
@@ -332,7 +332,7 @@ export default function AddPriceForm({
         </div>
       </section>
 
-      <button type="submit" disabled={pending} className="btn btn-primary w-full text-lg">
+      <button type="submit" disabled={pending} className="btn btn-primary w-full text-lg" data-tour="add-save">
         {pending ? "Saving…" : "Save price"}
       </button>
     </form>

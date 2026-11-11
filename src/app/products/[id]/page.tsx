@@ -48,7 +48,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[id]"
       </div>
 
       {/* Summary */}
-      <div className="grid grid-cols-3 gap-2 text-center">
+      <div className="grid grid-cols-3 gap-2 text-center" data-tour="item-summary">
         <div className="card p-3">
           <div className="text-xs text-muted">Best cost</div>
           <div className="mt-1 font-bold text-accent">{best ? rs(best.unit) : "—"}</div>
@@ -71,18 +71,22 @@ export default async function ProductPage({ params }: PageProps<"/products/[id]"
         </div>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2" data-tour="item-actions">
         <Link href={`/add?product=${product.id}`} className="btn btn-primary flex-1">
           + Add price
         </Link>
         <ListQty productId={product.id} qty={listQty} />
       </div>
-      <Link href={`/add?product=${product.id}&newshop=1`} className="btn btn-ghost -mt-2 w-full text-sm">
+      <Link
+        href={`/add?product=${product.id}&newshop=1`}
+        className="btn btn-ghost -mt-2 w-full text-sm"
+        data-tour="item-newshop"
+      >
         Found it at a shop that&apos;s not in the list? + New shop
       </Link>
 
       {/* Shop prices */}
-      <section>
+      <section data-tour="item-offers">
         <h2 className="mb-2 font-semibold">Prices by shop</h2>
         {offers.length === 0 && <p className="card p-4 text-sm text-muted">No prices yet. Check a shop and add one.</p>}
         <ul className="space-y-2">
@@ -157,7 +161,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[id]"
         </section>
       )}
 
-      <section>
+      <section data-tour="item-retail">
         <h2 className="mb-2 font-semibold">Retail price</h2>
         <RetailPrice productId={product.id} retail={product.retail_price} cost={best?.unit ?? null} />
       </section>

@@ -26,6 +26,7 @@ export default function BottomNav() {
             <Link
               key={t.href}
               href={t.href}
+              data-tour={t.href === "/add" ? "nav-add" : t.href === "/help" ? "nav-help" : undefined}
               className={`flex flex-col items-center gap-1 py-2 text-[11px] font-medium ${active ? "text-accent" : "text-muted"}`}
             >
               <span

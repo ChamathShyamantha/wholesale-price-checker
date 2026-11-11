@@ -1,7 +1,8 @@
 // Tutorial content in English and Sinhala.
 // Button names stay in English in both languages, because that's how they appear in the app.
 
-export type Lang = "en" | "si";
+import type { Lang } from "./lang";
+export type { Lang };
 
 export type Section = {
   id: string;
@@ -15,6 +16,8 @@ type Content = {
   pageTitle: string;
   intro: string;
   start: string;
+  tour: string;
+  tourHint: string;
   next: string;
   back: string;
   finish: string;
@@ -27,8 +30,10 @@ type Content = {
 export const TUTORIAL: Record<Lang, Content> = {
   en: {
     pageTitle: "How to use",
-    intro: "A short guide to every screen. Read it all, or go step by step.",
-    start: "Start step-by-step tutorial",
+    intro: "Take the guided tour on the real screens, or read the guide below.",
+    start: "Read the guide step by step",
+    tour: "Show me around (guided tour)",
+    tourHint: "Opens each screen and points to exactly what to tap.",
     next: "Next",
     back: "Back",
     finish: "Finish",
@@ -185,8 +190,10 @@ export const TUTORIAL: Record<Lang, Content> = {
   },
   si: {
     pageTitle: "භාවිතා කරන ආකාරය",
-    intro: "සෑම තිරයක් ගැනම කෙටි මාර්ගෝපදේශයක්. සියල්ල කියවන්න, නැත්නම් පියවරෙන් පියවර යන්න.",
-    start: "පියවරෙන් පියවර උපදෙස් අරඹන්න",
+    intro: "සැබෑ තිර මත මඟ පෙන්වන චාරිකාව බලන්න, නැත්නම් පහත උපදෙස් කියවන්න.",
+    start: "උපදෙස් පියවරෙන් පියවර කියවන්න",
+    tour: "ඇප් එක පෙන්වන්න (මඟ පෙන්වන චාරිකාව)",
+    tourHint: "සෑම තිරයක්ම විවෘත කර, ඔබන්න ඕන තැනම පෙන්වයි.",
     next: "ඊළඟ",
     back: "ආපසු",
     finish: "අවසන්",

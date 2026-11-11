@@ -68,24 +68,28 @@ export default function ProductList({ products }: { products: ProductRow[] }) {
     return true;
   });
 
+  // The tour spotlights a priced item if there is one, so it can explain the green price.
+  const tourCardId = (shown.find((p) => p.best_unit != null) ?? shown[0])?.id;
+
   return (
     <div>
       <div className="sticky top-0 z-20 -mx-4 bg-bg/95 px-4 pb-2 pt-1 backdrop-blur">
         <input
           className="field"
           type="search"
+          data-tour="item-search"
           placeholder="Search items…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
+        <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto" data-tour="filter-status">
           {STATUS.map((s) => (
             <button key={s.key} className="chip" data-on={status === s.key} onClick={() => setStatus(s.key)}>
               {s.label}
             </button>
           ))}
         </div>
-        <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
+        <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto" data-tour="filter-street">
           <button className="chip" data-on={!street} onClick={() => pickStreet("")}>
             All streets
           </button>
@@ -113,7 +117,7 @@ export default function ProductList({ products }: { products: ProductRow[] }) {
         {shown.map((p) => {
           const m = margin(p.best_unit, p.retail_price);
           return (
-            <li key={p.id}>
+            <li key={p.id} data-tour={p.id === tourCardId ? "item-card" : undefined}>
               <Link href={`/products/${p.id}`} className="card flex h-full gap-3 p-3 active:scale-[0.99]">
                 {p.photo_url ? (
                   // eslint-disable-next-line @next/next/no-img-element

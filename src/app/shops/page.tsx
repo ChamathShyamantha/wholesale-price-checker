@@ -28,7 +28,9 @@ export default async function ShopsPage() {
         </p>
       </header>
 
-      <NewShopForm streets={streets} />
+      <div data-tour="shops-new">
+        <NewShopForm streets={streets} />
+      </div>
 
       <div className="mt-5 space-y-6">
         {streets.map((street) => (
@@ -38,7 +40,7 @@ export default async function ShopsPage() {
               {byStreet.get(street)!.map((s) => {
                 const left = s.item_count - s.priced_count;
                 return (
-                  <li key={s.id}>
+                  <li key={s.id} data-tour={s.id === shops[0]?.id ? "shop-card" : undefined}>
                     <Link href={`/shops/${s.id}`} className="card block h-full p-3">
                       <div className="font-semibold">{s.name}</div>
                       {s.address && <div className="text-xs text-muted">{s.address}</div>}

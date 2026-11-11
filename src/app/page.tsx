@@ -17,13 +17,13 @@ export default async function Home() {
   return (
     <>
       <header className="mb-4 flex items-end justify-between gap-3">
-        <div>
+        <div data-tour="items-header">
           <h1 className="text-2xl font-bold tracking-tight">Items</h1>
           <p className="text-sm text-muted">
             {products.length} items · {priced} priced · {products.length - priced} to check
           </p>
         </div>
-        <a href="/api/export" className="btn btn-ghost text-sm">
+        <a href="/api/export" className="btn btn-ghost text-sm" data-tour="export">
           Export CSV
         </a>
       </header>

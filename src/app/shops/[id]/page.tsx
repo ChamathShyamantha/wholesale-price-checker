@@ -37,7 +37,7 @@ export default async function ShopPage({ params }: PageProps<"/shops/[id]">) {
           {shop.address ? ` · ${shop.address}` : ""}
         </p>
         {shop.notes && <p className="mt-1 text-sm">{shop.notes}</p>}
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-3 flex flex-wrap gap-2" data-tour="shop-actions">
           <Link href={`/add?shop=${shop.id}`} className="btn btn-primary">
             + Add price here
           </Link>
@@ -55,7 +55,7 @@ export default async function ShopPage({ params }: PageProps<"/shops/[id]">) {
       </div>
 
       {toCheck.length > 0 && (
-        <section>
+        <section data-tour="shop-items">
           <h2 className="mb-2 font-semibold">To check here ({toCheck.length})</h2>
           <ul className="space-y-2">
             {toCheck.map((i) => (
@@ -77,7 +77,7 @@ export default async function ShopPage({ params }: PageProps<"/shops/[id]">) {
         </section>
       )}
 
-      <section>
+      <section data-tour={toCheck.length > 0 ? undefined : "shop-items"}>
         <h2 className="mb-2 font-semibold">Prices here ({priced.length})</h2>
         {priced.length === 0 && <p className="card p-4 text-sm text-muted">No prices recorded at this shop yet.</p>}
         <ul className="space-y-2">

@@ -1,13 +1,15 @@
 "use client";
 
-import Link from "next/link";
 import { useSyncExternalStore } from "react";
+import { startTour } from "@/lib/tourStore";
 
 const KEY = "wpc_hint_dismissed";
 const listeners = new Set<() => void>();
 function subscribe(cb: () => void) {
   listeners.add(cb);
-  return () => listeners.delete(cb);
+  return () => {
+    listeners.delete(cb);
+  };
 }
 function read() {
   try {
@@ -17,17 +19,14 @@ function read() {
   }
 }
 
-/** One-time pointer to the tutorial, shown until dismissed. */
+/** One-time offer of the guided tour, shown until used or dismissed. */
 export default function FirstVisitHint() {
   const dismissed = useSyncExternalStore(subscribe, read, () => true);
   if (dismissed) return null;
-  const remember = () => {
+  const dismiss = () => {
     try {
       localStorage.setItem(KEY, "1");
     } catch {}
-  };
-  const dismiss = () => {
-    remember();
     listeners.forEach((l) => l());
   };
   return (
@@ -37,10 +36,16 @@ export default function FirstVisitHint() {
       </span>
       <div className="flex-1">
         <div className="font-semibold">New here? / අලුත්ද?</div>
-        {/* Only remember here: hiding the hint mid-click would cancel the navigation. */}
-        <Link href="/help" onClick={remember} className="font-semibold text-accent underline">
-          Open the tutorial · උපදෙස් බලන්න
-        </Link>
+        <button
+          type="button"
+          onClick={() => {
+            dismiss();
+            startTour();
+          }}
+          className="text-left font-semibold text-accent underline"
+        >
+          Take the tour · චාරිකාව අරඹන්න
+        </button>
       </div>
       <button type="button" onClick={dismiss} className="min-h-8 min-w-8 text-muted" aria-label="Dismiss">
         ✕
