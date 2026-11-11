@@ -35,12 +35,14 @@ export default function AddPriceForm({
   categories,
   initialProductId,
   initialShopId,
+  startWithNewShop = false,
 }: {
   products: P[];
   shops: S[];
   categories: string[];
   initialProductId: number | null;
   initialShopId: number | null;
+  startWithNewShop?: boolean;
 }) {
   const [state, action, pending] = useActionState<AddPriceState, FormData>(addPrice, { ok: false, message: "" });
 
@@ -48,7 +50,9 @@ export default function AddPriceForm({
   const savedShop = useSyncExternalStore(noop, readShop, () => null);
   const [shopPick, setShopPick] = useState<number | null | undefined>(initialShopId ?? undefined);
   const shopId = shopPick !== undefined ? shopPick : shops.some((s) => s.id === savedShop) ? savedShop : null;
-  const [newShop, setNewShop] = useState<{ name: string; street: string } | null>(null);
+  const [newShop, setNewShop] = useState<{ name: string; street: string } | null>(
+    startWithNewShop ? { name: "", street: "" } : null,
+  );
 
   const [productId, setProductId] = useState<number | null>(initialProductId);
   const [newProduct, setNewProduct] = useState<{ name: string; category: string } | null>(null);
@@ -129,7 +133,14 @@ export default function AddPriceForm({
 
       {/* Shop */}
       <section>
-        <label className="mb-1.5 block text-sm font-semibold">Shop</label>
+        <div className="mb-1.5 flex items-center justify-between">
+          <label className="text-sm font-semibold">Shop</label>
+          {!newShop && (
+            <button type="button" className="text-sm font-semibold text-accent" onClick={() => setNewShop({ name: "", street: "" })}>
+              + New shop
+            </button>
+          )}
+        </div>
         {newShop ? (
           <div className="card space-y-2 p-3">
             <div className="flex items-center justify-between">
@@ -141,6 +152,9 @@ export default function AddPriceForm({
             <input
               className="field"
               name="new_shop_name"
+              placeholder="Shop name"
+              autoFocus
+              required
               value={newShop.name}
               onChange={(e) => setNewShop({ ...newShop, name: e.target.value })}
             />
@@ -175,7 +189,14 @@ export default function AddPriceForm({
 
       {/* Item */}
       <section>
-        <label className="mb-1.5 block text-sm font-semibold">Item</label>
+        <div className="mb-1.5 flex items-center justify-between">
+          <label className="text-sm font-semibold">Item</label>
+          {!newProduct && (
+            <button type="button" className="text-sm font-semibold text-accent" onClick={() => setNewProduct({ name: "", category: "Other" })}>
+              + New item
+            </button>
+          )}
+        </div>
         {newProduct ? (
           <div className="card space-y-2 p-3">
             <div className="flex items-center justify-between">
@@ -187,6 +208,9 @@ export default function AddPriceForm({
             <input
               className="field"
               name="new_product_name"
+              placeholder="Item name"
+              autoFocus
+              required
               value={newProduct.name}
               onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
             />

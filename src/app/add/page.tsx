@@ -34,6 +34,7 @@ export default async function AddPage({ searchParams }: PageProps<"/add">) {
         categories={CATEGORIES}
         initialProductId={initialProductId}
         initialShopId={initialShopId}
+        startWithNewShop={sp.newshop === "1"}
       />
     </>
   );

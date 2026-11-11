@@ -77,6 +77,9 @@ export default async function ProductPage({ params }: PageProps<"/products/[id]"
         </Link>
         <ListQty productId={product.id} qty={listQty} />
       </div>
+      <Link href={`/add?product=${product.id}&newshop=1`} className="btn btn-ghost -mt-2 w-full text-sm">
+        Found it at a shop that&apos;s not in the list? + New shop
+      </Link>
 
       {/* Shop prices */}
       <section>
