@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #f6f6f4;
+  --card: #ffffff;
+  --fg: #1c1c1a;
+  --muted: #6b6b66;
+  --line: #e4e4df;
+  --accent: #0f7b5f;
+  --accent-soft: #e3f3ed;
+  --warn: #b45309;
+  --warn-soft: #fdf1e2;
+  --bad: #b42318;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121211;
+    --card: #1c1c1a;
+    --fg: #ededea;
+    --muted: #9a9a94;
+    --line: #2d2d2a;
+    --accent: #3ccf9e;
+    --accent-soft: #143329;
+    --warn: #f0a24a;
+    --warn-soft: #3a2a14;
+    --bad: #f47067;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-card: var(--card);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-bad: var(--bad);
+  --font-sans: var(--font-geist-sans);
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+input,
+select,
+textarea {
+  font-size: 16px; /* stops iOS zooming into inputs */
+}
+
+/* In a layer so Tailwind utilities (w-20, py-1.5…) can override these. */
+@layer components {
+.field {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--line);
+  background: var(--card);
+  padding: 0.7rem 0.85rem;
+  outline: none;
+}
+.field:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: 0.75rem;
+  padding: 0.7rem 1rem;
+  font-weight: 600;
+  min-height: 44px;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+@media (prefers-color-scheme: dark) {
+  .btn-primary {
+    color: #0b1f18;
+  }
+}
+.btn-ghost {
+  border: 1px solid var(--line);
+  background: var(--card);
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+}
+
+.chip {
+  white-space: nowrap;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  padding: 0.35rem 0.8rem;
+  font-size: 0.875rem;
+}
+.chip[data-on="true"] {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
