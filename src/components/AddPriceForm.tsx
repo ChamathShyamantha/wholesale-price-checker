@@ -329,7 +329,7 @@ export default function AddPriceForm({
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
           />
-          <PhotoInput label="Photo" resetKey={state.at} />
+          <PhotoInput label="Photo of item or price tag" resetKey={state.at} />
         </div>
       </section>
 

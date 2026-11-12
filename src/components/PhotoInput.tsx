@@ -29,7 +29,9 @@ export default function PhotoInput({
   const [url, setUrl] = useState<string | null>(initial);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  // Two pickers: one opens the camera, the other the phone's gallery / files.
+  const cameraRef = useRef<HTMLInputElement>(null);
+  const galleryRef = useRef<HTMLInputElement>(null);
   const [lastReset, setLastReset] = useState(resetKey);
   if (resetKey !== lastReset) {
     setLastReset(resetKey);
@@ -52,7 +54,8 @@ export default function PhotoInput({
       setError(e instanceof Error ? e.message : "Upload failed");
     } finally {
       setBusy(false);
-      if (inputRef.current) inputRef.current.value = "";
+      if (cameraRef.current) cameraRef.current.value = "";
+      if (galleryRef.current) galleryRef.current.value = "";
     }
   }
 
@@ -60,23 +63,42 @@ export default function PhotoInput({
     <div>
       <input type="hidden" name={name} value={url ?? ""} />
       <input
-        ref={inputRef}
+        ref={cameraRef}
         type="file"
         accept="image/*"
         capture="environment"
         className="hidden"
+        aria-label={`${label}: take a photo`}
         onChange={(e) => onPick(e.target.files?.[0])}
       />
-      <div className="flex items-center gap-3">
+      <input
+        ref={galleryRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        aria-label={`${label}: choose from gallery`}
+        onChange={(e) => onPick(e.target.files?.[0])}
+      />
+      <span className="mb-1 block text-sm font-medium">{label}</span>
+      <div className="flex flex-wrap items-center gap-2">
         {url && (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={url} alt="" className="h-16 w-16 rounded-lg object-cover" />
         )}
-        <button type="button" className="btn btn-ghost text-sm" disabled={busy} onClick={() => inputRef.current?.click()}>
-          {busy ? "Uploading…" : url ? `Change ${label.toLowerCase()}` : `📷 ${label}`}
-        </button>
+        {busy ? (
+          <span className="btn btn-ghost text-sm opacity-70">Uploading…</span>
+        ) : (
+          <>
+            <button type="button" className="btn btn-ghost text-sm" onClick={() => cameraRef.current?.click()}>
+              📷 Camera
+            </button>
+            <button type="button" className="btn btn-ghost text-sm" onClick={() => galleryRef.current?.click()}>
+              🖼️ Gallery
+            </button>
+          </>
+        )}
         {url && !busy && (
-          <button type="button" className="text-sm text-muted underline" onClick={() => setUrl(null)}>
+          <button type="button" className="px-1 text-sm text-muted underline" onClick={() => setUrl(null)}>
             Remove
           </button>
         )}
