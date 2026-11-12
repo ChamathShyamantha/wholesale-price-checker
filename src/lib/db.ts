@@ -87,6 +87,8 @@ const SCHEMA = [
     photo_url text,
     created_at timestamptz NOT NULL DEFAULT now()
   )`,
+  // Added after launch: a photo of the shop front, so you can recognise it in the market.
+  `ALTER TABLE shops ADD COLUMN IF NOT EXISTS photo_url text`,
   `CREATE INDEX IF NOT EXISTS prices_product_shop ON prices (product_id, shop_id, created_at DESC)`,
   `CREATE TABLE IF NOT EXISTS leads (
     product_id int NOT NULL REFERENCES products(id) ON DELETE CASCADE,

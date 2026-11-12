@@ -151,8 +151,8 @@ export const TOUR_STEPS: TourStep[] = [
     path: "/shops",
     match: SHOPS,
     target: "shops-new",
-    en: { title: "Shops screen", body: "All shops, grouped by street. Add a shop with its phone number and address here." },
-    si: { title: "Shops තිරය", body: "සියලු කඩ වීදිය අනුව. දුරකථන අංකය සහ ලිපිනය සමඟ අලුත් කඩයක් මෙතනින් එක් කරන්න." },
+    en: { title: "Shops screen", body: "All shops, grouped by street. Add a shop with its phone number, address and a photo of the shop front here." },
+    si: { title: "Shops තිරය", body: "සියලු කඩ වීදිය අනුව. දුරකථන අංකය, ලිපිනය සහ කඩයේ ඡායාරූපයක් සමඟ අලුත් කඩයක් මෙතනින් එක් කරන්න." },
   },
   {
     path: "/shops",

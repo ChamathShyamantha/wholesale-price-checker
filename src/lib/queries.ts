@@ -139,6 +139,7 @@ export type ShopRow = {
   phone: string | null;
   maps_url: string | null;
   notes: string | null;
+  photo_url: string | null;
   item_count: number;
   priced_count: number;
 };
@@ -146,7 +147,7 @@ export type ShopRow = {
 export async function listShops(): Promise<ShopRow[]> {
   return q<ShopRow>(`
     WITH ${LINKS}
-    SELECT s.id, s.name, s.street, s.address, s.phone, s.maps_url, s.notes,
+    SELECT s.id, s.name, s.street, s.address, s.phone, s.maps_url, s.notes, s.photo_url,
       (SELECT count(*)::int FROM links k WHERE k.shop_id = s.id) AS item_count,
       (SELECT count(DISTINCT pr.product_id)::int FROM prices pr WHERE pr.shop_id = s.id) AS priced_count
     FROM shops s ORDER BY s.street, s.name`);
@@ -168,7 +169,7 @@ export type ShopItem = {
 
 export async function getShop(id: number) {
   const [shop] = await q<ShopRow>(
-    `SELECT id, name, street, address, phone, maps_url, notes, 0 AS item_count, 0 AS priced_count
+    `SELECT id, name, street, address, phone, maps_url, notes, photo_url, 0 AS item_count, 0 AS priced_count
      FROM shops WHERE id = $1`,
     [id],
   );

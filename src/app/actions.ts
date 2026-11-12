@@ -45,8 +45,8 @@ export async function addPrice(_prev: AddPriceState, form: FormData): Promise<Ad
 
     if (!shopId && newShop) {
       const [row] = await q<{ id: number }>(
-        `INSERT INTO shops (name, street) VALUES ($1, $2) RETURNING id`,
-        [newShop, str(form.get("new_shop_street")) ?? ""],
+        `INSERT INTO shops (name, street, photo_url) VALUES ($1, $2, $3) RETURNING id`,
+        [newShop, str(form.get("new_shop_street")) ?? "", str(form.get("new_shop_photo"))],
       );
       shopId = row.id;
     }
@@ -123,8 +123,8 @@ export async function createShop(form: FormData) {
   const name = str(form.get("name"));
   if (!name) return;
   const [row] = await q<{ id: number }>(
-    `INSERT INTO shops (name, street, address, phone, maps_url, notes) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-    [name, str(form.get("street")) ?? "", str(form.get("address")), str(form.get("phone")), str(form.get("maps_url")), str(form.get("notes"))],
+    `INSERT INTO shops (name, street, address, phone, maps_url, notes, photo_url) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+    [name, str(form.get("street")) ?? "", str(form.get("address")), str(form.get("phone")), str(form.get("maps_url")), str(form.get("notes")), str(form.get("photo_url"))],
   );
   refresh();
   redirect(`/shops/${row.id}`);
@@ -134,9 +134,9 @@ export async function updateShop(form: FormData) {
   const id = num(form.get("id"));
   if (!id) return;
   await q(
-    `UPDATE shops SET name = COALESCE($2, name), street = $3, address = $4, phone = $5, maps_url = $6, notes = $7
+    `UPDATE shops SET name = COALESCE($2, name), street = $3, address = $4, phone = $5, maps_url = $6, notes = $7, photo_url = $8
      WHERE id = $1`,
-    [id, str(form.get("name")), str(form.get("street")) ?? "", str(form.get("address")), str(form.get("phone")), str(form.get("maps_url")), str(form.get("notes"))],
+    [id, str(form.get("name")), str(form.get("street")) ?? "", str(form.get("address")), str(form.get("phone")), str(form.get("maps_url")), str(form.get("notes")), str(form.get("photo_url"))],
   );
   refresh();
 }

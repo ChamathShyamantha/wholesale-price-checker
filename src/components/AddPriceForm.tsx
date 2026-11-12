@@ -186,6 +186,7 @@ export default function AddPriceForm({
                 <option key={s} value={s} />
               ))}
             </datalist>
+            <PhotoInput name="new_shop_photo" label="Shop photo" resetKey={state.at} />
           </div>
         ) : (
           <>

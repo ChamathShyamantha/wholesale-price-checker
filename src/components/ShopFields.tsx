@@ -1,4 +1,5 @@
 import type { ShopRow } from "@/lib/queries";
+import PhotoInput from "./PhotoInput";
 
 export default function ShopFields({ shop, streets }: { shop?: ShopRow; streets: string[] }) {
   return (
@@ -40,6 +41,11 @@ export default function ShopFields({ shop, streets }: { shop?: ShopRow; streets:
           placeholder="Opening hours, bargains?, card ok?, contact person…"
         />
       </label>
+      <div className="text-sm">
+        <span className="mb-1 block font-medium">Shop photo</span>
+        <PhotoInput label="Shop photo" initial={shop?.photo_url ?? null} />
+        <p className="mt-1 text-xs text-muted">A photo of the shop front or sign, so you can find it again.</p>
+      </div>
     </>
   );
 }

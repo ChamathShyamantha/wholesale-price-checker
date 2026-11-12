@@ -31,6 +31,12 @@ export default async function ShopPage({ params }: PageProps<"/shops/[id]">) {
         <Link href="/shops" className="text-sm text-accent">
           ← Shops
         </Link>
+        {shop.photo_url && (
+          <a href={shop.photo_url} target="_blank" rel="noreferrer" className="mt-3 block">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={shop.photo_url} alt={`${shop.name} shop`} className="h-44 w-full rounded-xl object-cover" />
+          </a>
+        )}
         <h1 className="mt-2 text-2xl font-bold leading-tight tracking-tight">{shop.name}</h1>
         <p className="text-sm text-muted">
           {shop.street}
